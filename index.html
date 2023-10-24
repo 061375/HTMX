@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://unpkg.com/htmx.org@1.9.6" crossorigin="anonymous"></script>
+    
+    <div id="cell" 
+      hx-trigger="load, every 30s" 
+      hx-post="/javascript/mystuff/htmx/cells/cell.php" 
+      hx-target="#target_div"
+      ></div>
+
+    <!-- a target DOm node to act on -->
+    <div id="target_div" class="fade" data-id="0"></div>
+    <script type="module" defer>
+        import * as J from './js/htmx.js'
+        // assign J to a const ... I am using $
+        const $ = new J.HTMX()
+
+        // init the config to update the cell every 30 seconds
+        $.config("#cell","id")
+          .hide(null) // hide the cell
+          .after("#cell", (evt)=>{ // after the cell is loaded
+              // get the current ID from the data-id attribute
+              let i = J.HTMX.getData(evt,"id")
+              // increment the ID
+              i++
+              if(i>3) i=0
+              // set the new ID
+              J.HTMX.setData(evt,"id",i)
+            })
+          .show(null); // show the cell after eveything is loaded
+        
+    </script>
+    <style>
+      .fade {
+          transition: all ease-in 0.3s;
+      }
+      .hide {
+          opacity: 0;
+      }
+      .flex {
+        display: flex;
+      }
+      .c1 {
+        flex: 1;
+        margin: 3px;
+        padding: 3px;
+        border: 1px dotted white;
+      }
+    </style>
+</body>
+</html>
